@@ -36,7 +36,7 @@ console.log(response)
 }
 
 const main = async()=>{
-  await mint("0x88C94f7b6448DCA08c4F7B1921f6899FB3d335db",1000)
-   //await transferOwner("0x88C94f7b6448DCA08c4F7B1921f6899FB3d335db")
+ // await mint("0x06cac7b9F869b2c6D39991f10d7BC3220d303532",1000)
+   await transferOwner("0x06cac7b9F869b2c6D39991f10d7BC3220d303532")
 }
 main();

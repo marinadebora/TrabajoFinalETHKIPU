@@ -66,8 +66,21 @@ const modifyReward = async(amount:number)=>{
     console.log(error)
   }
 }
+const blockNumber = async()=>{
+  const block = await provider.getBlockNumber();
+  console.log(block)
+}
 
+const getAccruedFees = async()=>{
+  const accruedFees = await tokenFarmContract.getAccruedFees();
+  console.log(accruedFees)
+}
 
+const withdrawProfits =async()=>{
+    const profits = await tokenFarmContract.withdrawProfits();
+    const response = await profits.wait();
+    console.log(response)
+}
 
 const main = async () => {
   //await deposit(1000);
@@ -75,6 +88,8 @@ const main = async () => {
  //await claimRewards();
  //await distributeRewardsAll()
  //await modifyReward()
-
+ //await blockNumber()
+await getAccruedFees()
+//await withdrawProfits()
 };
 main();

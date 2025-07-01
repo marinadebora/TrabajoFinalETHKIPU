@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// Compatible with OpenZeppelin Contracts ^5.0.0
 //Carabajal Marina Débora
 
 pragma solidity ^0.8.27;
@@ -11,7 +12,6 @@ import "./LPToken.sol";
  * @notice Una granja de staking donde las recompensas se distribuyen proporcionalmente al total stakeado.
  */
 contract TokenFarm {
-    //
     // Variables de estado
     address public treasury;
     string public name = "Proportional Token Farm";
@@ -21,8 +21,9 @@ contract TokenFarm {
     uint256 public fee;
     uint256 public REWARD_PER_BLOCK = 1e18; // Recompensa por bloque (total para todos los usuarios)
     uint256 public totalStakingBalance; // Total de tokens en staking
-
+    uint256 public accruedFees;
     address[] public stakers;
+    
     struct StructUser {
         uint256 stakingBalance;
         uint256 checkpoints;
@@ -34,11 +35,13 @@ contract TokenFarm {
     mapping(address => StructUser) public structUser;
     // Eventos
     // Agregar eventos para Deposit, Withdraw, RewardsClaimed y RewardsDistributed.
-    event Deposit(address indexed from, uint amount);
-    event Withdrawal(uint amount);
+    event Deposit(address indexed from, uint256 amount);
+    event Withdrawal(uint256 amount);
     event RewardsClaimed(address indexed user, uint256 amount);
     event RewardsDistributed(uint256 timestamp, string message);
     event NewReward(uint256 timestamp, string message);
+    event CommissionWithdrawn(address indexed treasury, uint256 amount);
+    event FeeChanged(uint256 timestamp, string message);
     //verifica que solo el owner pueda realizar la operación
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can perform this action");
@@ -59,6 +62,7 @@ contract TokenFarm {
         require(structUser[msg.sender].isStaking, "you are not staking");
         _;
     }
+
     // Constructor
     constructor(DAppToken _dappToken, LPToken _lpToken, address _treasury) {
         // Configurar las instancias de los contratos de DappToken y LPToken.
@@ -90,23 +94,21 @@ contract TokenFarm {
         // Incrementar totalStakingBalance con _amount.
         totalStakingBalance += _amount;
         // Si el usuario nunca ha hecho staking antes, agregarlo al array stakers y marcar hasStaked como true.
-        if (!structUser[msg.sender].isStaking) {
+        if (!structUser[msg.sender].hasStaked) {
             stakers.push(msg.sender);
-            // Actualizar isStaking del usuario a true.
             structUser[msg.sender].hasStaked = true;
         }
         // Actualizar isStaking del usuario a true.
         structUser[msg.sender].isStaking = true;
         // Si checkpoints del usuario está vacío, inicializarlo con el número de bloque actual.
-        if (structUser[msg.sender].checkpoints ==0) {
+        if (structUser[msg.sender].checkpoints == 0) {
             structUser[msg.sender].checkpoints = block.number;
-        }else{
-        // Llamar a distributeRewards para calcular y actualizar las recompensas pendientes.
-        distributeRewards(msg.sender);
+        } else {
+            // Llamar a distributeRewards para calcular y actualizar las recompensas pendientes.
+            distributeRewards(msg.sender);
         }
         // Emitir un evento de depósito.
         emit Deposit(msg.sender, _amount);
-
     }
 
     /**
@@ -191,17 +193,42 @@ contract TokenFarm {
         // Actualizar el checkpoint del usuario al bloque actual.
         structUser[beneficiary].checkpoints = block.number;
     }
-    function deductCommission(uint256 _amount) internal returns (uint) {
+
+    function deductCommission(uint256 _amount) internal returns (uint256) {
         //calcula la comisión
         uint256 feeAmount = (_amount * fee) / 10000;
-        //tranfiere el fee a la tesoreria
-        dappToken.mint(treasury, feeAmount);
+        //guarda el feeAmount
+        accruedFees += feeAmount;
         //retorna el valor neto a transferir
         return _amount - feeAmount;
     }
+
     function modifyReward(uint256 _amount) external onlyOwner {
         require(_amount > 0, "Reward per block must be greater than 0");
         REWARD_PER_BLOCK = _amount;
         emit NewReward(block.timestamp, "the block reward amount was changed");
+    }
+
+    function modifyFee(uint256 _amount) external onlyOwner {
+        require(_amount > 0, "Fee must be greater than 0");
+        fee = _amount;
+        emit FeeChanged(block.timestamp, "the fee amount was changed");
+    }
+
+    function withdrawProfits() external {
+        uint256 feeAmount = accruedFees;
+        require(
+            msg.sender == treasury,
+            "Only treasury can perform this action"
+        );
+        require(accruedFees > 0, "No fees to withdraw");
+        // Transfiere la comisión a la tesorería
+        accruedFees = 0;
+        dappToken.mint(treasury, feeAmount);
+        emit CommissionWithdrawn(treasury, feeAmount);
+    }
+
+    function getAccruedFees() external view returns (uint256) {
+        return accruedFees;
     }
 }

@@ -79,8 +79,8 @@ Crear un archivo .env en la raíz del proyecto con el siguiente contenido:
     ```
 
 ### 🔗 Contratos desplegados
-   https://sepolia.etherscan.io/address/0xa4a770f1884a5F055d768e56A31A7a692f8faF4b
+  DAppToken  - https://sepolia.etherscan.io/address/0x7E1D57e997cA3061E60B7283E7e69f9113D4885c#code
 
-   https://sepolia.etherscan.io/address/0xb2C350121720c4aa04EED00a0B07ED3E6Df1c106
+  LPToken - https://sepolia.etherscan.io/address/0x5829B07c14fe29B798f14dB88b8Db25101C54950#code
 
-   https://sepolia.etherscan.io/address/0x88C94f7b6448DCA08c4F7B1921f6899FB3d335db
+  TokenFarm - https://sepolia.etherscan.io/address/0x06cac7b9F869b2c6D39991f10d7BC3220d303532#code

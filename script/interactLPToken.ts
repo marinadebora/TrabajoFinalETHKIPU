@@ -43,7 +43,7 @@ const approve = async (spender: string, amount: number) => {
 };
 const main = async () => {
   //await mint(`0x8Ce268046ae216316deC5BcD8cfd61a3F1EEE7BC`,1000)
-  await approve("0x88C94f7b6448DCA08c4F7B1921f6899FB3d335db", 1000);
+  await approve("0x06cac7b9F869b2c6D39991f10d7BC3220d303532", 1000);
   //await owner()
 };
 main();
