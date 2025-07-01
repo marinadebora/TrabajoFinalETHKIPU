@@ -89,7 +89,7 @@ const main = async () => {
  //await distributeRewardsAll()
  //await modifyReward()
  //await blockNumber()
-await getAccruedFees()
+//await getAccruedFees()
 //await withdrawProfits()
 };
 main();

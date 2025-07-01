@@ -1,4 +1,4 @@
-# 📄 Proportional Token Farm
+# 📄 Trabajo Final ETH-KIPU & HENRY  Token Farm
 
 Este proyecto implementa un contrato inteligente de DeFi llamado **TokenFarm**, que permite a los usuarios hacer *staking* de un token LP ficticio y recibir recompensas en un token de la plataforma (**DAppToken**).
 
@@ -65,18 +65,37 @@ El propietario puede actualizar el monto de recompensa que se genera por bloque.
 
 El contrato puede desplegarse en una red local o testnet (por ejemplo, Sepolia) usando **Hardhat**.
 
----
-Crear un archivo .env en la raíz del proyecto con el siguiente contenido: 
+### 📦 Instalación
+1. Clonar el repositorio
+2. Ejecutar:
+3. Crear un archivo .env en la raíz del proyecto con el siguiente contenido:
     ```bash  
     ALCHEMY_API_KEY=tu_api_key_de_alchemy
     ETHERSCAN_API_KEY=tu_api_key_de_etherscan
     SEPOLIA_PRIVATE_KEY=tu_private_key_de_sepolia
-    OWNER:el_addres_de_la_wallet
-    TREASURY:el_addres_de_la_wallet_tesoreria
-    DAAPTOKEN:el_addres_del_contrato_DApToken
-    LPTOKEN:el_addres_del_contrato_LPToken
-    TOKENFARM:el_addres_del_contrato_TokenFarm
+    OWNER=el_addres_de_la_wallet
+    TREASURY=el_addres_de_la_wallet_tesoreria
+    DAAPTOKEN=el_addres_del_contrato_DApToken
+    LPTOKEN=el_addres_del_contrato_LPToken
+    TOKENFARM=el_addres_del_contrato_TokenFarm
     ```
+## ⚙️ Comandos útiles
+### 🔧 Compilar contrato
+
+     npx hardhat compile
+
+### ✅ Ejecutar tests
+
+    npx hardhat test
+   
+
+### 🚀 Deploy + Verificación en Sepolia
+
+    npx hardhat ignition deploy ./ignition/modules/DAppToken.ts --network sepolia --verify
+
+    npx hardhat ignition deploy ./ignition/modules/LPToken.ts --network sepolia --verify
+
+    npx hardhat ignition deploy ./ignition/modules/TokenFarm.ts --network sepolia --verify
 
 ### 🔗 Contratos desplegados
   DAppToken  - https://sepolia.etherscan.io/address/0x7E1D57e997cA3061E60B7283E7e69f9113D4885c#code
